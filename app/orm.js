@@ -40,8 +40,7 @@ async function managerList(){
     const manager =  await db.query(sql)
     console.table(manager)
     const a = JSON.stringify(manager)
-    console.log(manager)
-    console.log(`this is the first name`, a.first_name)
+    console.log(`this is the first name`, a)
     return a
 }
 

@@ -78,11 +78,7 @@ async function company() {
   }
 
 }
-
 company()
-
-
-
 
 async function addEmployees(){
   const newEmployee = await inquirer
@@ -106,7 +102,7 @@ async function addEmployees(){
           type: "input",
           name:"eManager",
           message:"Select the Employees Manager",
-          choices: [orm.a],
+          choices: [orm.managerList()],
       },
 
   ])
