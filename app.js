@@ -1,5 +1,6 @@
 const inquirer = require('inquirer');
 const Choice = require('inquirer/lib/objects/choice');
+const dbConnect = require('./app/connection');
 const orm = require( './app/orm' );
 
 
@@ -81,6 +82,7 @@ async function company() {
 company()
 
 async function addEmployees(){
+  let manager = await orm.managerList()
   const newEmployee = await inquirer
   .prompt([
       {
@@ -99,10 +101,16 @@ async function addEmployees(){
           message:"Enter the employees role?",
       },
       {
-          type: "input",
+          type: "list",
           name:"eManager",
           message:"Select the Employees Manager",
-          choices: [orm.managerList()],
+          choices(){
+            const choiceArray = []
+            manager.forEach(({first_name}) => {
+              choiceArray.push(first_name);
+            });
+            return choiceArray;
+          },
       },
 
   ])

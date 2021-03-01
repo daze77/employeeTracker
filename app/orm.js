@@ -38,10 +38,10 @@ async function getallDepartments( name='' ){
 async function managerList(){
     const sql = `SELECT first_name FROM employee WHERE role_id = manager_id`
     const manager =  await db.query(sql)
+
     console.table(manager)
-    const a = JSON.stringify(manager)
-    console.log(`this is the first name`, a)
-    return a
+    console.log(manager)
+    return manager
 }
 
 managerList()
