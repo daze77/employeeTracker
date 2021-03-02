@@ -37,10 +37,12 @@ async function getallDepartments( name='' ){
   }
 
   async function addRoles(newRole){
+    const depID = await locateDepartmentID(newRole.departmentName)
+    console.log(`dep ID is `, depID)
     console.log(`this is the add roles function`, newRole)
-    // const sql = `INSERT INTO role (title, salary) VALUES ("${newRole}")`
-    // const result = await db.query(sql)
-    // return (result)
+    const sql = `INSERT INTO role (title, salary, department_id) VALUES ("${newRole.roleName}", "${newRole.salary}", "${depID}")`
+    const result = await db.query(sql)
+    return (result)
   }
 
 
@@ -64,6 +66,14 @@ async function managerList(){
 
 
 
+async function locateDepartmentID(depName){
+  const sql = `SELECT id FROM department WHERE name = "${depName}"`;
+  const results = await db.query(sql)
+  console.log(`the number result is`, results)
+  console.log(`the number ID is `, results[0].id)
+  return results[0].id
+}
+
 
 
 
@@ -79,3 +89,6 @@ function closeORM(){
 
 
 module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM }
+
+
+
