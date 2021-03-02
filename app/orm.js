@@ -15,36 +15,47 @@ async function getallDepartments( name='' ){
     const sql = `SELECT * FROM department `+ (name ? `WHERE name = ?` : '' );
     const results = await db.query(sql);
     console.table(results)
-    return ( results, [ name ] );
+    return ( results);
   }
   
   async function getallRoles( title='' ){
     const sql = `SELECT * FROM role `+ (title ? `WHERE title = ?` : '' );
     const results = await db.query(sql);
-    console.table(results)
-    return ( results, [ title ] );
+    return ( results );
   }
+ 
 
   async function addEmployeetoDB(a){
     console.log(`this is the add employee function`, a)
-
-
-
-
   }
+
+  async function addDepartment(departmentName){
+    console.log(`this is the add department function`, departmentName)
+    const sql = `INSERT INTO department (name) VALUES ("${departmentName}")`
+    const result = await db.query(sql)
+    return (result)
+  }
+
+  async function addRoles(newRole){
+    console.log(`this is the add roles function`, newRole)
+    // const sql = `INSERT INTO role (title, salary) VALUES ("${newRole}")`
+    // const result = await db.query(sql)
+    // return (result)
+  }
+
+
+
 
 
 
 async function managerList(){
     const sql = `SELECT first_name FROM employee WHERE role_id = manager_id`
     const manager =  await db.query(sql)
-
-    console.table(manager)
-    console.log(manager)
     return manager
+
 }
 
-managerList()
+
 
 
 
@@ -67,4 +78,4 @@ function closeORM(){
 }
 
 
-module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, closeORM }
+module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM }
