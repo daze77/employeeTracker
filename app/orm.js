@@ -25,8 +25,11 @@ async function getallDepartments( name='' ){
   }
  
 
-  async function addEmployeetoDB(a){
-    console.log(`this is the add employee function`, a)
+  async function addEmployeetoDB(newEmployee){
+    console.log(`this is the add employee function`, newEmployee)
+    console.log(`first name`, newEmployee.eManager,newEmployee.eManager.first_name)
+
+
   }
 
   async function addDepartment(departmentName){
@@ -51,23 +54,37 @@ async function getallDepartments( name='' ){
 
 
 async function managerList(){
-    const sql = `SELECT first_name FROM employee WHERE role_id = manager_id`
+    const sql = `SELECT first_name, last_name FROM employee WHERE role_id = manager_id`
     const manager =  await db.query(sql)
     return manager
 
 }
 
 
-
-
-
-
-
-
-
-
 async function locateDepartmentID(depName){
   const sql = `SELECT id FROM department WHERE name = "${depName}"`;
+  const results = await db.query(sql)
+  console.log(`the number result is`, results)
+  console.log(`the number ID is `, results[0].id)
+  return results[0].id
+}
+
+
+
+async function locateManagerID(managerName){
+  const sql = `SELECT id FROM employee WHERE first_name = "${managerName}" AND role_id = manager_id`;
+  const results = await db.query(sql)
+  console.log(`the number result is`, results)
+  console.log(`the number ID is `, results[0].id)
+  return results[0].id
+}
+
+
+
+
+
+async function locateRoleID(roleName){
+  const sql = `SELECT id FROM role WHERE title = "${roleName}"`;
   const results = await db.query(sql)
   console.log(`the number result is`, results)
   console.log(`the number ID is `, results[0].id)

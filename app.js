@@ -109,8 +109,8 @@ async function addEmployees(){
           message:"Select the Employees Manager",
           choices(){
             const managerNameList = []
-            manager.forEach(({first_name}) => {
-              managerNameList.push(first_name);
+            manager.forEach(({first_name, last_name}) => {
+              managerNameList.push(`${first_name} ${last_name}`);
             });
             return managerNameList;
           },
