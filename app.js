@@ -50,13 +50,14 @@ async function company() {
   switch (companyOptions) {
     
     case "ViewALLEmployees":
-      return orm.getEmployeeInformation();
+      return viewInformation("employee")
+      
         
     case "ViewALLDepartments":
-      return orm.getallDepartments();
+      return viewInformation("department")  
 
     case "ViewALLRoles":
-      return orm.getallRoles();
+      return viewInformation("role")
 
     case "ADDEmployees":
       return addEmployees();
@@ -68,10 +69,10 @@ async function company() {
       return addRoleDetails();
 
     case "updateEMPLOYEERoles":
-      return console.log("You chose to Update Employees Roles");
+      return updateEmployee();
 
     default:
-      return console.log ("You didn't make a proper selection - booooo");
+      return console.log ("Thank you! Have a great day!");
   }
 }
 company()
@@ -97,8 +98,8 @@ async function addEmployees(){
           message:"Enter the employees role?",
           choices(){
             const fullRolesList = []
-            roles.forEach(({title}) => {
-              fullRolesList.push(title);
+            roles.forEach(({title, id}) => {
+              fullRolesList.push(id + " " + title);
             });
             return fullRolesList;
           },
@@ -109,16 +110,24 @@ async function addEmployees(){
           message:"Select the Employees Manager",
           choices(){
             const managerNameList = []
-            manager.forEach(({first_name, last_name}) => {
-              managerNameList.push(`${first_name} ${last_name}`);
+            manager.forEach(({first_name, last_name, id}) => {
+              managerNameList.push({firstname: `${first_name}`, lastname: `${last_name}`, id: id});
             });
-            return managerNameList;
+            console.log(`checking this out`, managerNameList)
+            const manName =[]
+            managerNameList.forEach(({id, firstname, lastname})=>{
+              manName.push(id + " " + firstname + " " + lastname);
+            });
+            return manName;
           },
+          
       },
   ])
 
-   console.log(`this is the new employee`, newEmployee, )
+   console.log(`this is the new employee`, newEmployee)
    orm.addEmployeetoDB(newEmployee)
+
+   company()
     
 }
 
@@ -135,13 +144,13 @@ async function addDepartmentDetails(){
   ])
   console.log(`this is the new department`, newDepartment.departmentName ) 
   orm.addDepartment(newDepartment.departmentName)
-    
+  
+  company()
 }
 
 
 async function addRoleDetails(){
   let department = await orm.getallDepartments()
-  console.log(`this is the department pull`, department)
   const newRole = await inquirer
   .prompt([
       {
@@ -172,5 +181,52 @@ async function addRoleDetails(){
   ])
   console.log(`this is the new roll`, newRole.roleName, newRole.salary, newRole.departmentName ) 
   orm.addRoles(newRole)
-    
+  
+  company()
+}
+
+
+
+
+
+async function viewInformation(info){
+  let information = info
+  console.log(`this is the choice passed through`, information)
+  if(information === "employee"){
+      orm.getEmployeeInformation();
+      company()
+    } else if (information === "department") {
+      orm.getallDepartments();
+      company()
+    } else if (information === "role") {
+      orm.getallRoles();
+      company()
+    }
+}
+
+
+
+
+async function updateEmployee(){
+  let employees = await orm.getEmployeeInformation();
+  
+  const employeeUPdate = await inquirer
+  .prompt([
+      {
+          type: "list",
+          name:"employeeupdate",
+          message:"Which Employee would you like to update?",
+          choices(){
+            const employeeList = []
+            employees.forEach(({first_name}) => {
+              employeeList.push(first_name)
+            });
+            return employeeList;
+          },
+      }
+    ])
+
+
+
+
 }

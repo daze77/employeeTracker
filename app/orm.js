@@ -1,4 +1,4 @@
-const db = require(`./connection`)('employeesDB', 'SummerSummer')
+const db = require(`./connection`)('employeesDB', 'Summer77')
 
 
 async function getEmployeeInformation( first_name='' ){
@@ -21,13 +21,25 @@ async function getallDepartments( name='' ){
   async function getallRoles( title='' ){
     const sql = `SELECT * FROM role `+ (title ? `WHERE title = ?` : '' );
     const results = await db.query(sql);
+    console.table(results)
     return ( results );
   }
  
 
   async function addEmployeetoDB(newEmployee){
+    const manager = newEmployee.eManager
+    const splitmanager = manager.split(" ")
+    const role = newEmployee.eRole
+    const splitrole = role.split(" ")
     console.log(`this is the add employee function`, newEmployee)
-    console.log(`first name`, newEmployee.eManager,newEmployee.eManager.first_name)
+    console.log(`first name`, newEmployee.eManager)
+    let managerID = splitmanager[0]
+    let roleID = splitrole[0]
+    console.log(`manager number`, managerID)
+    console.log(`Role ID `, roleID)
+    const sql = `INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ("${newEmployee.eFirstName}", "${newEmployee.eLastName}", ${roleID}, ${managerID})`
+    const result = await db.query(sql)
+    return (result)
 
 
   }
@@ -54,7 +66,7 @@ async function getallDepartments( name='' ){
 
 
 async function managerList(){
-    const sql = `SELECT first_name, last_name FROM employee WHERE role_id = manager_id`
+    const sql = `SELECT first_name, last_name, id FROM employee WHERE role_id = manager_id`
     const manager =  await db.query(sql)
     return manager
 
@@ -68,35 +80,6 @@ async function locateDepartmentID(depName){
   console.log(`the number ID is `, results[0].id)
   return results[0].id
 }
-
-
-
-async function locateManagerID(managerName){
-  const sql = `SELECT id FROM employee WHERE first_name = "${managerName}" AND role_id = manager_id`;
-  const results = await db.query(sql)
-  console.log(`the number result is`, results)
-  console.log(`the number ID is `, results[0].id)
-  return results[0].id
-}
-
-
-
-
-
-async function locateRoleID(roleName){
-  const sql = `SELECT id FROM role WHERE title = "${roleName}"`;
-  const results = await db.query(sql)
-  console.log(`the number result is`, results)
-  console.log(`the number ID is `, results[0].id)
-  return results[0].id
-}
-
-
-
-
-
-
-
 
 
 // always close the db (ORM)
