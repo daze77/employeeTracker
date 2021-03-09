@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const Choice = require('inquirer/lib/objects/choice');
 const dbConnect = require('./app/connection');
 const orm = require( './app/orm' );
+const cTable = require('console.table')
 
 
 async function company() {
@@ -82,13 +83,16 @@ async function veiwInfoSelected(viewOptions){
   let option = viewOptions
   console.log(`option is:`, option)
   if(option.viewList === "View Employees"){
-    await orm.getEmployeeInformation();
+    const employees = await orm.getEmployeeInformation();
+    console.table(employees)
     whatToView()
     } else if (option.viewList === "View Departments"){
-      await orm.getallDepartments();
+      const departments = await orm.getallDepartments();
+      console.table(departments)
       whatToView()
     } else if (option.viewList === "View Roles"){
-      await orm.getallRoles();
+      const roles = await orm.getallRoles();
+      console.table(roles)
       whatToView()
     } else {
       company()
@@ -170,7 +174,6 @@ async function addEmployees(){
             manager.forEach(({first_name, last_name, id}) => {
               managerNameList.push({firstname: `${first_name}`, lastname: `${last_name}`, id: id});
             });
-            console.log(`checking this out`, managerNameList)
             const manName =[]
             managerNameList.forEach(({id, firstname, lastname})=>{
               manName.push(id + " " + firstname + " " + lastname);
@@ -181,14 +184,12 @@ async function addEmployees(){
       },
   ])
 
-   console.log(`this is the new employee`, newEmployee)
    orm.addEmployeetoDB(newEmployee)
 
    whatToAdd()    
 }
 async function addDepartmentDetails(){
   let department = await orm.getallDepartments()
-  console.log('department list pulled', department)
   const newDepartment = await inquirer
   .prompt([
       {
@@ -197,7 +198,6 @@ async function addDepartmentDetails(){
           message:"Please enter the new Department Name",
       },
   ])
-  console.log(`this is the new department`, newDepartment.departmentName ) 
   orm.addDepartment(newDepartment.departmentName)
   
   whatToAdd()
@@ -225,14 +225,12 @@ async function addRoleDetails(){
           department.forEach(({name}) => {
             departmentList.push(name);
           });
-          console.log(`updated`, departmentList)
           return departmentList;
           
         },
 
       },
   ])
-  console.log(`this is the new roll`, newRole.roleName, newRole.salary, newRole.departmentName ) 
   orm.addRoles(newRole)
   
   whatToAdd()
@@ -249,14 +247,12 @@ async function whatToUpdate(){
       choices: ["Employees Manager", "Employees Role", "Go Back"]
     }
   ])
-  console.log(`information type to add = `, updateOptions)
   updateSelectedInfoType(updateOptions)
 }
 
 // function to determine next set of functions based on user selection of what they would like to update
 function updateSelectedInfoType(updateOptions){
   let option = updateOptions
-  console.log(`option is:`, option)
   if(option.viewList === "Employees Manager"){
     updateEmployeeManager();
     } else if (option.viewList === "Employees Role"){
@@ -272,8 +268,7 @@ async function updateEmployeeRole(){
   let employees = await orm.getEmployeeInformation();
   let roles = await orm.getallRoles()
 
-  console.log (`this is the employee pull from db`, employees)
-  
+ 
   const eUPdate = await inquirer
   .prompt([
       {
@@ -301,7 +296,6 @@ async function updateEmployeeRole(){
         },
       }
     ])
-    console.log(`this is the updated employee details`, eUPdate)
     orm.updateEmployee(eUPdate)
 
     whatToUpdate()
@@ -312,8 +306,6 @@ async function updateEmployeeManager(){
   let employees = await orm.getEmployeeInformation();
   let manager = await orm.managerList()
 
-  console.log (`this is the employee pull from db`, employees)
-  
   const eUPdate = await inquirer
   .prompt([
       {
@@ -341,7 +333,6 @@ async function updateEmployeeManager(){
         },
       }
     ])
-    console.log(`this is the updated employee details`, eUPdate)
     orm.updateEmployeeManager(eUPdate)
 
     whatToUpdate()
