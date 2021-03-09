@@ -126,7 +126,6 @@ async function deleteEmployees(employee){
 // function to delete departments
 async function deleteDepartments(roles){
   const depName = roles.deletedep
-  console.log(depName)
   const sql = `DELETE FROM department WHERE name = "${depName}"`;
   const results = await db.query(sql)
   return (results)

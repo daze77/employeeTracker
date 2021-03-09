@@ -74,14 +74,12 @@ async function whatToView(){
     }
     
   ])
-  console.log(`what to view option = `, viewOptions)
   veiwInfoSelected(viewOptions)
 }
 
 // function to call database details based on user selection
 async function veiwInfoSelected(viewOptions){
   let option = viewOptions
-  console.log(`option is:`, option)
   if(option.viewList === "View Employees"){
     const employees = await orm.getEmployeeInformation();
     console.table(employees)
@@ -133,14 +131,12 @@ async function whatToAdd(){
       choices: ["Add Employees", "Add Departments", "Add Roles", "Go Back"]
     }
   ])
-  console.log(`information type to add = `, addOptions)
   addSelectedInfoType(addOptions)
 }
 
 // function to determine what add function to call based on user input
 function addSelectedInfoType(addOptions){
   let option = addOptions
-  console.log(`option is:`, option)
   if(option.viewList === "Add Employees"){
     addEmployees();
     
@@ -373,7 +369,6 @@ async function whatToDelete(){
       choices: ["Employees", "Departments", "Roles", "Go Back"]
     }
   ])
-  console.log(`information type to delete = `, deleteOption)
   deleteSelectedDetails(deleteOption)
 }
 
@@ -384,7 +379,6 @@ async function deleteSelectedDetails(deleteOption){
   let employees = await orm.getEmployeeInformation()
 
   let option = deleteOption
-  console.log(`option is:`, option)
   if(option.viewList === "Employees"){
     const delEmployees = await inquirer
     .prompt([
