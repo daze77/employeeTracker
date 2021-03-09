@@ -354,5 +354,79 @@ async function whatToDelete(){
     }
   ])
   console.log(`information type to delete = `, deleteOption)
-  updateSelectedInfoType(deleteOption)
+  deleteSelectedDetails(deleteOption)
+}
+
+
+
+// function to call database details based on user selection
+async function deleteSelectedDetails(deleteOption){
+  let employees = await orm.getEmployeeInformation()
+
+  let option = deleteOption
+  console.log(`option is:`, option)
+  if(option.viewList === "Employees"){
+    const delEmployees = await inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "deleteEMP",
+        message: "Please select the employee you would like to delete.",
+        choices(){
+          const employeeList = []
+          employees.forEach(({first_name, last_name, id}) => {
+            employeeList.push(id + " " + first_name + " " + last_name);
+          });
+          return employeeList;
+        }
+      },
+    ])
+    orm.deleteEmployees(delEmployees)
+    whatToDelete()
+
+  } else if (option.viewList === "Departments"){
+    let departments = await orm.getallDepartments()
+
+      const deldepartments = await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "deletedep",
+          message: "Please select the department you would like to delete.",
+          choices(){
+            const departmentList = []
+            departments.forEach(({name}) => {
+              departmentList.push(name);
+            });
+            return departmentList;
+          }
+        },
+      ])
+      orm.deleteDepartments(deldepartments)
+      whatToDelete()
+
+  } else if (option.viewList === "Roles"){
+    let roles = await orm.getallRoles()
+
+    const delRoles = await inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "deleterole",
+        message: "Please select the department you would like to delete.",
+        choices(){
+          const roleList = []
+          roles.forEach(({title}) => {
+            roleList.push(title);
+          });
+          return roleList;
+        }
+      },
+    ])
+    orm.deleteRoles(delRoles)
+    whatToDelete()
+
+  } else {
+    company()
+  }
 }

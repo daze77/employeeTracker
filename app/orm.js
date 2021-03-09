@@ -102,13 +102,59 @@ async function updateEmployeeManager(employee){
 }
 
 
+// function to delete employees
+async function delteEmployee(employee){
+
+
+}
+
+
+
+
+
+
+// function to delete employees
+async function deleteEmployees(employee){
+  const employeeName = employee.deleteEMP
+  const employeeconcat = employeeName.split(" ").join("")
+  const sql = `DELETE FROM employee WHERE CONCAT(id,first_name,last_name) = "${employeeconcat}"`;
+  const results = await db.query(sql)
+  return (results)
+
+}
+
+// function to delete departments
+async function deleteDepartments(roles){
+  const depName = roles.deletedep
+  console.log(depName)
+  const sql = `DELETE FROM department WHERE name = "${depName}"`;
+  const results = await db.query(sql)
+  return (results)
+
+}
+
+// function to delete roles
+async function deleteRoles(roles){
+  const roleID = await locateRoleID(roles.deleterole)
+  const sql = `DELETE FROM role WHERE id = ${roleID}`;
+  const results = await db.query(sql)
+  return (results)
+
+}
+
+
+
+
+
 // always close the db (ORM)
 function closeORM(){
     return db.close()
 }
 
 
-module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM, updateEmployee, updateEmployeeManager }
+
+
+module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM, updateEmployee, updateEmployeeManager, delteEmployee, deleteRoles, deleteDepartments, deleteEmployees }
 
 
 
