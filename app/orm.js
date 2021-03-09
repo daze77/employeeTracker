@@ -143,7 +143,13 @@ async function deleteRoles(roles){
 }
 
 
-
+// function to pull utilization budgets
+async function unitilzatonBudgets(picDep){
+const dep = picDep.departmentBudg
+const sql = `SELECT department.id, department.name, SUM(salary) FROM department LEFT JOIN role ON department.id = role.department_id WHERE department.name = "${dep}" GROUP BY department.id`
+const results = await db.query(sql)
+return (results)
+}
 
 
 // always close the db (ORM)
@@ -154,7 +160,7 @@ function closeORM(){
 
 
 
-module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM, updateEmployee, updateEmployeeManager, delteEmployee, deleteRoles, deleteDepartments, deleteEmployees }
+module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM, updateEmployee, updateEmployeeManager, delteEmployee, deleteRoles, deleteDepartments, deleteEmployees, unitilzatonBudgets }
 
 
 

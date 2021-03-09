@@ -70,7 +70,7 @@ async function whatToView(){
       type: "list",
       name: "viewList",
       message: "Please select the information you would like to view",
-      choices:["View Employees", "View Departments", "View Roles", "Go Back"]
+      choices:["View Employees", "View Departments", "View Roles", "View Utilized budget of a Department", "Go Back"]
     }
     
   ])
@@ -93,6 +93,26 @@ async function veiwInfoSelected(viewOptions){
     } else if (option.viewList === "View Roles"){
       const roles = await orm.getallRoles();
       console.table(roles)
+      whatToView()
+    } else if (option.viewList === "View Utilized budget of a Department" ){
+      const departments = await orm.getallDepartments();
+      const picDep = await inquirer
+      .prompt([
+        {
+          type: "list",
+          name: "departmentBudg",
+          message: "Please select the department for which you would like to see the utilization budget for.",
+          choices(){
+            const departmentList = []
+            departments.forEach(({name}) => {
+              departmentList.push(name);
+            });
+            return departmentList;
+          }
+        },
+      ])
+      const results = await orm.unitilzatonBudgets(picDep)
+      console.table(results)
       whatToView()
     } else {
       company()
