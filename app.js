@@ -13,32 +13,23 @@ async function company() {
         message: 'What would you like to do?',
         choices: [
           {
-            name: "View all Employees",
-            value: "ViewALLEmployees",
+            name: "View Information (Employees, Departments, Roles)",
+            value: "View",
+
           },
           {
-            name: "View all Departments",
-            value: "ViewALLDepartments",
+            name: "Add Information (Employees, Departments, Roles",
+            value: "Add",
+
           },
           {
-            name: "View all Roles",
-            value: "ViewALLRoles",
+            name: "Delete information (Employees, Departments, Roles)",
+            value: "Delete",
+
           },
           {
-            name: "Add Employees",
-            value: "ADDEmployees",
-          },
-          {
-            name: "Add Departments",
-            value: "ADDDepartments",
-          },
-          {
-            name: "Add Roles",
-            value: "ADDRoles",
-          },
-          {
-            name: "Update Employee Roles",
-            value: "updateEMPLOYEERoles",
+            name: "Update Information (Employees Manager, Employees Role)",
+            value: "Update",
           },
           {
             name: "Quit",
@@ -48,28 +39,18 @@ async function company() {
       },
     ]);
   switch (companyOptions) {
-    
-    case "ViewALLEmployees":
-      return viewInformation("employee")
-      
-        
-    case "ViewALLDepartments":
-      return viewInformation("department")  
 
-    case "ViewALLRoles":
-      return viewInformation("role")
+    case "View":
+      return whatToView()
 
-    case "ADDEmployees":
-      return addEmployees();
+    case "Add":
+      return whatToAdd()
 
-    case "ADDDepartments":
-      return addDepartmentDetails();
+    case "Update":
+      return whatToUpdate()
 
-    case "ADDRoles":
-      return addRoleDetails();
-
-    case "updateEMPLOYEERoles":
-      return updateEmployee();
+    case "Delete":
+      return whatToDelete()
 
     default:
       return console.log ("Thank you! Have a great day!");
@@ -77,6 +58,82 @@ async function company() {
 }
 company()
 
+
+
+
+// function for user to input what they would like to view
+async function whatToView(){
+  const viewOptions = await inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "viewList",
+      message: "Please select the information you would like to view",
+      choices:["View Employees", "View Departments", "View Roles", "Go Back"]
+    }
+    
+  ])
+  console.log(`what to view option = `, viewOptions)
+  veiwInfoSelected(viewOptions)
+}
+
+// function to call database details based on user selection
+async function veiwInfoSelected(viewOptions){
+  let option = viewOptions
+  console.log(`option is:`, option)
+  if(option.viewList === "View Employees"){
+    await orm.getEmployeeInformation();
+    whatToView()
+    } else if (option.viewList === "View Departments"){
+      await orm.getallDepartments();
+      whatToView()
+    } else if (option.viewList === "View Roles"){
+      await orm.getallRoles();
+      whatToView()
+    } else {
+      company()
+    }
+
+}
+
+
+
+// function to for user input of what information to be added
+async function whatToAdd(){
+  const addOptions = await inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "viewList",
+      message: "Please select the type of information you would like to add",
+      choices: ["Add Employees", "Add Departments", "Add Roles", "Go Back"]
+    }
+  ])
+  console.log(`information type to add = `, addOptions)
+  addSelectedInfoType(addOptions)
+}
+
+// function to determine what add function to call based on user input
+function addSelectedInfoType(addOptions){
+  let option = addOptions
+  console.log(`option is:`, option)
+  if(option.viewList === "Add Employees"){
+    addEmployees();
+    
+    } else if (option.viewList === "Add Departments"){
+      addDepartmentDetails();
+      
+    } else if (option.viewList === "Add Roles"){
+      addRoleDetails();
+      
+    } else {
+      company()
+    }
+
+}
+
+
+// add functions run based on which option the user selected
 async function addEmployees(){
   let manager = await orm.managerList()
   let roles = await orm.getallRoles()
@@ -127,10 +184,8 @@ async function addEmployees(){
    console.log(`this is the new employee`, newEmployee)
    orm.addEmployeetoDB(newEmployee)
 
-   company()
-    
+   whatToAdd()    
 }
-
 async function addDepartmentDetails(){
   let department = await orm.getallDepartments()
   console.log('department list pulled', department)
@@ -145,10 +200,8 @@ async function addDepartmentDetails(){
   console.log(`this is the new department`, newDepartment.departmentName ) 
   orm.addDepartment(newDepartment.departmentName)
   
-  company()
+  whatToAdd()
 }
-
-
 async function addRoleDetails(){
   let department = await orm.getallDepartments()
   const newRole = await inquirer
@@ -182,32 +235,40 @@ async function addRoleDetails(){
   console.log(`this is the new roll`, newRole.roleName, newRole.salary, newRole.departmentName ) 
   orm.addRoles(newRole)
   
-  company()
+  whatToAdd()
 }
 
+// function to determine what information the user would like to update
+async function whatToUpdate(){
+  const updateOptions = await inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "viewList",
+      message: "Please select the type of employee information you would like to update",
+      choices: ["Employees Manager", "Employees Role", "Go Back"]
+    }
+  ])
+  console.log(`information type to add = `, updateOptions)
+  updateSelectedInfoType(updateOptions)
+}
 
-
-
-
-async function viewInformation(info){
-  let information = info
-  console.log(`this is the choice passed through`, information)
-  if(information === "employee"){
-      await orm.getEmployeeInformation();
-      company()
-    } else if (information === "department") {
-      await orm.getallDepartments();
-      company()
-    } else if (information === "role") {
-      await orm.getallRoles();
+// function to determine next set of functions based on user selection of what they would like to update
+function updateSelectedInfoType(updateOptions){
+  let option = updateOptions
+  console.log(`option is:`, option)
+  if(option.viewList === "Employees Manager"){
+    updateEmployeeManager();
+    } else if (option.viewList === "Employees Role"){
+      updateEmployeeRole();
+    } else {
       company()
     }
+
 }
 
-
-
-
-async function updateEmployee(){
+// update functions
+async function updateEmployeeRole(){
   let employees = await orm.getEmployeeInformation();
   let roles = await orm.getallRoles()
 
@@ -243,6 +304,64 @@ async function updateEmployee(){
     console.log(`this is the updated employee details`, eUPdate)
     orm.updateEmployee(eUPdate)
 
-    company()
+    whatToUpdate()
 
+
+}
+async function updateEmployeeManager(){
+  let employees = await orm.getEmployeeInformation();
+  let manager = await orm.managerList()
+
+  console.log (`this is the employee pull from db`, employees)
+  
+  const eUPdate = await inquirer
+  .prompt([
+      {
+          type: "list",
+          name:"employeeupdate",
+          message:"Which Employee would you like to update?",
+          choices(){
+            const employeeList = []
+            employees.forEach(({first_name, last_name}) => {
+              employeeList.push(first_name + " " + last_name);
+            });
+            return employeeList;
+          }
+      },
+      {
+        type: "list",
+        name: "newManager",
+        message:"Please select the employess new role.",
+        choices(){
+          const fullManagerList = []
+          manager.forEach(({first_name, last_name}) => {
+            fullManagerList.push(first_name + " " + last_name);
+          });
+          return fullManagerList; 
+        },
+      }
+    ])
+    console.log(`this is the updated employee details`, eUPdate)
+    orm.updateEmployeeManager(eUPdate)
+
+    whatToUpdate()
+
+
+}
+
+
+
+// function to determine what the user would like to delete
+async function whatToDelete(){
+  const deleteOption = await inquirer
+  .prompt([
+    {
+      type: "list",
+      name: "viewList",
+      message: "Please select the type of iinformation you would like to delete",
+      choices: ["Employees", "Departments", "Roles", "Go Back"]
+    }
+  ])
+  console.log(`information type to delete = `, deleteOption)
+  updateSelectedInfoType(deleteOption)
 }
