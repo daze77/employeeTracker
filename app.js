@@ -193,13 +193,13 @@ async function viewInformation(info){
   let information = info
   console.log(`this is the choice passed through`, information)
   if(information === "employee"){
-      orm.getEmployeeInformation();
+      await orm.getEmployeeInformation();
       company()
     } else if (information === "department") {
-      orm.getallDepartments();
+      await orm.getallDepartments();
       company()
     } else if (information === "role") {
-      orm.getallRoles();
+      await orm.getallRoles();
       company()
     }
 }
@@ -209,8 +209,11 @@ async function viewInformation(info){
 
 async function updateEmployee(){
   let employees = await orm.getEmployeeInformation();
+  let roles = await orm.getallRoles()
+
+  console.log (`this is the employee pull from db`, employees)
   
-  const employeeUPdate = await inquirer
+  const eUPdate = await inquirer
   .prompt([
       {
           type: "list",
@@ -218,15 +221,28 @@ async function updateEmployee(){
           message:"Which Employee would you like to update?",
           choices(){
             const employeeList = []
-            employees.forEach(({first_name}) => {
-              employeeList.push(first_name)
+            employees.forEach(({first_name, last_name, id}) => {
+              employeeList.push(first_name + " " + last_name);
             });
             return employeeList;
-          },
+          }
+      },
+      {
+        type: "list",
+        name: "newRole",
+        message:"Please select the employess new role.",
+        choices(){
+          const fullRolesList = []
+          roles.forEach(({title}) => {
+            fullRolesList.push(title);
+          });
+          return fullRolesList; 
+        },
       }
     ])
+    console.log(`this is the updated employee details`, eUPdate)
+    orm.updateEmployee(eUPdate)
 
-
-
+    company()
 
 }

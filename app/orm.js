@@ -5,7 +5,7 @@ async function getEmployeeInformation( first_name='' ){
     const sql = `SELECT * FROM employee `+ (first_name ? `WHERE first_name = ?` : '' );
     const results = await db.query(sql);
     console.table(results)
-    return ( results, [ first_name ] );
+    return ( results);
 }
 
 
@@ -81,6 +81,30 @@ async function locateDepartmentID(depName){
   return results[0].id
 }
 
+async function locateRoleID(roleName){
+  const sql = `SELECT id FROM role WHERE title = "${roleName}"`;
+  const results = await db.query(sql)
+  console.log(`the role number result is`, results)
+  console.log(`the role number ID is `, results[0].id)
+  return results[0].id
+}
+
+
+
+async function updateEmployee(employee){
+  const roleID = await locateRoleID(employee.newRole)
+  const employeeName = employee.employeeupdate
+  const employeeconcat = employeeName.split(" ").join("")
+  console.log(`roleID is `, roleID)
+  const sql = `UPDATE employee SET role_id = ${roleID} WHERE CONCAT(first_name,last_name) = "${employeeconcat}"`;
+  const results = await db.query(sql)
+  return (results)
+
+}
+
+
+
+
 
 // always close the db (ORM)
 function closeORM(){
@@ -88,7 +112,7 @@ function closeORM(){
 }
 
 
-module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM }
+module.exports = { getEmployeeInformation, getallDepartments, getallRoles, addEmployeetoDB, managerList, addDepartment, addRoles, closeORM, updateEmployee }
 
 
 
